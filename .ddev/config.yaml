@@ -2,7 +2,7 @@ name: ddev-vscode-devcontainer-drupal9-template
 type: drupal9
 docroot: web
 php_version: "7.4"
-webserver_type: nginx-fpm
+webserver_type: apache-fpm
 router_http_port: "80"
 router_https_port: "443"
 xdebug_enabled: false
@@ -13,6 +13,15 @@ mysql_version: ""
 use_dns_when_possible: true
 composer_version: ""
 web_environment: []
+hooks:
+  post-import-db:
+    - exec: "drush cr"
+  post-start:
+    - exec-host: "ddev composer install"
+    - composer: "require drush/drush"
+  post-config:
+    #All drush site:install (si) commands: https://drushcommands.com/drush-9x/site/site:install/ NOTE: WE WANT TO EXECUTE THIS ONCE!! MAYBE DELEGATE SOMEWHERE ELSE
+    - exec: "drush si --account-name 'admin' --account-pass 'admin' --account-mail 'test@test.de' --site-mail 'site@mail.de' "
 
 
 # This config.yaml was created with ddev version v1.17.6
